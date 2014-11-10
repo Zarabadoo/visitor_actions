@@ -398,6 +398,9 @@ function visitor_actions_unpack_action($record) {
  */
 function visitor_actions_save_action($action) {
   $fields = (array) $action;
+  // Ensure that the machine name has
+  $fields['machine_name'] = str_replace('-', '_', $action->machine_name);
+
   $fields += array(
     'module' => 'visitor_actions',
   );
