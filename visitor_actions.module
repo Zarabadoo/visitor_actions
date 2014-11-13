@@ -397,9 +397,10 @@ function visitor_actions_unpack_action($record) {
  *   An array representing an action.
  */
 function visitor_actions_save_action($action) {
+  debug($action);
   $fields = (array) $action;
-  // Ensure that the machine name has
-  $fields['machine_name'] = str_replace('-', '_', $action->machine_name);
+  // Ensure that the machine name meets the naming conventions.
+  $fields['machine_name'] = preg_replace('/[^a-z0-9_]+/', '_', drupal_strtolower($fields['machine_name']));
 
   $fields += array(
     'module' => 'visitor_actions',
@@ -414,6 +415,7 @@ function visitor_actions_save_action($action) {
       ->execute();
   }
   catch (Exception $e) {
+    debug($e, 'error saving action');
     drupal_set_message(t('There was a problem saving the visitor action @action_name', array('@action_name' => $action['machine_name'])), 'error');
     return FALSE;
   }
